@@ -19,6 +19,18 @@ http.createServer(function(req,resp){
             else if (req.url == "/clients"){
                 emp.getClientList(req,resp);
             }
+            else if (req.url == "/materials"){
+                emp.getMaterials(req,resp);
+            }
+            else if (req.url == "/typeofmaterial"){
+                emp.getMaterialTypes(req,resp);
+            }
+            else if (req.url == "/materialtable"){
+                emp.getMaterialsTable(req,resp);
+            }
+            else if (req.url == "/brands"){
+                emp.getBrands(req,resp);
+            }
             else if (req.url == "/concreteproc"){
                 emp.getConcProcList(req,resp);
             }
@@ -60,6 +72,45 @@ http.createServer(function(req,resp){
                 });
                 req.on("end", function(){
                     emp.addClient(req,resp,reqBody);
+                });
+            }
+            else if(req.url == "/materials"){
+                var reqBody = '';
+                req.on("data", function(data){
+                    reqBody += data;
+                    console.log(reqBody);
+                    if(reqBody.length > 1e7){
+                        httpMsg.show413(req, resp);
+                    }
+                });
+                req.on("end", function(){
+                    emp.addMaterials(req,resp,reqBody);
+                });
+            }
+            else if(req.url == "/typeofmaterial"){
+                var reqBody = '';
+                req.on("data", function(data){
+                    reqBody += data;
+                    console.log(reqBody);
+                    if(reqBody.length > 1e7){
+                        httpMsg.show413(req, resp);
+                    }
+                });
+                req.on("end", function(){
+                    emp.addTypeMaterials(req,resp,reqBody);
+                });
+            }
+            else if(req.url == "/brands"){
+                var reqBody = '';
+                req.on("data", function(data){
+                    reqBody += data;
+                    console.log(reqBody);
+                    if(reqBody.length > 1e7){
+                        httpMsg.show413(req, resp);
+                    }
+                });
+                req.on("end", function(){
+                    emp.addBrands(req,resp,reqBody);
                 });
             }
             else if(req.url == "/reservations"){
@@ -174,6 +225,19 @@ http.createServer(function(req,resp){
                 });
                 req.on("end", function(){
                     emp.deleteClients(req,resp,reqBody);
+                });
+            }
+            else if(req.url == "/materials"){
+                var reqBody = '';
+                req.on("data", function(data){
+                    reqBody += data;
+                    console.log(reqBody);
+                    if(reqBody.length > 1e7){
+                        httpMsg.show413(req, resp);
+                    }
+                });
+                req.on("end", function(){
+                    emp.deleteMaterials(req,resp,reqBody);
                 });
             }
             else if(req.url == "/procs"){

@@ -54,6 +54,58 @@ exports.getConcProcList = function(req, resp){
     });
 };
 
+exports.getMaterials = function(req, resp){
+    db.executeSql("select * from Materials", function(data, err){
+        if(err){
+            httpMsg.show500(req, resp, err);
+        }
+        else{
+            httpMsg.sendJson(req,resp,data);
+        }
+        resp.end();
+
+    });
+};
+
+exports.getBrands = function(req, resp){
+    db.executeSql("select * from Brands", function(data, err){
+        if(err){
+            httpMsg.show500(req, resp, err);
+        }
+        else{
+            httpMsg.sendJson(req,resp,data);
+        }
+        resp.end();
+
+    });
+};
+
+exports.getMaterialTypes = function(req, resp){
+    db.executeSql("select * from TypesOfMaterial", function(data, err){
+        if(err){
+            httpMsg.show500(req, resp, err);
+        }
+        else{
+            httpMsg.sendJson(req,resp,data);
+        }
+        resp.end();
+
+    });
+};
+
+exports.getMaterialsTable = function(req, resp){
+    db.executeSql("select Materials.ID, Materials.NameOfMaterial, Materials.Count, Materials.BasePrice, Brands.BrandName, Brands.BrandDescription, TypesOfMaterial.TypeOfMaterial, TypesOfMaterial.Description from Materials left join Brands on Materials.BrandID = Brands.ID left join TypesOfMaterial on Materials.TypeOfMaterialID = TypesOfMaterial.ID", function(data, err){
+        if(err){
+            httpMsg.show500(req, resp, err);
+        }
+        else{
+            httpMsg.sendJson(req,resp,data);
+        }
+        resp.end();
+
+    });
+};
+
 exports.get = function(req, resp, empno){
     db.executeSql("select * from Worker where ID =" + empno, function(data, err){
         if(err){
@@ -167,6 +219,96 @@ exports.addReservation = function(req, resp, reqBody){
         if(data){
             var sql = "insert into Reservation (ID, ClientID, AgreementDate, AgreementTime, Price, StatusID, SalonID) values ";
             sql+= util.format("(%d, %d, '%s', '%s', %d, %d, %d )", data.ID, data.ClientID, data.AgreementDate, data.AgreementTime, data.Price, data.StatusID, data.SalonID);
+            console.log(sql);
+            
+            db.executeSql(sql, function(data, err){
+                if(err){
+                    httpMsg.show500(req, resp, err);
+                }
+                else{
+                    httpMsg.send200(req,resp);
+                }
+                resp.end();
+        
+            });
+        }
+        else{
+            throw new Error("Input not valid!")
+        }
+    }
+    catch(ex){
+
+    }
+};
+
+exports.addMaterials = function(req, resp, reqBody){
+    try{
+        if(!reqBody) throw new Error("Input not valid!");
+        var data = JSON.parse(reqBody);
+        console.log(data);
+        if(data){
+            var sql = "insert into Materials (BrandID, TypeOfMaterialID, NameOfMaterial, BasePrice, Count) values";
+            sql+= util.format("(%d, %d, '%s', %d, %d)", data.BrandID, data.TypeOfMaterialID, data.NameOfMaterial, data.BasePrice, data.Count);
+            console.log(sql);
+            
+            db.executeSql(sql, function(data, err){
+                if(err){
+                    httpMsg.show500(req, resp, err);
+                }
+                else{
+                    httpMsg.send200(req,resp);
+                }
+                resp.end();
+        
+            });
+        }
+        else{
+            throw new Error("Input not valid!")
+        }
+    }
+    catch(ex){
+
+    }
+};
+
+exports.addTypeMaterials = function(req, resp, reqBody){
+    try{
+        if(!reqBody) throw new Error("Input not valid!");
+        var data = JSON.parse(reqBody);
+        console.log(data);
+        if(data){
+            var sql = "insert into TypesOfMaterial (ID, TypeOfMaterial, Description) values";
+            sql+= util.format("(%d, '%s', '%s')", data.ID, data.TypeOfMaterial, data.Description);
+            console.log(sql);
+            
+            db.executeSql(sql, function(data, err){
+                if(err){
+                    httpMsg.show500(req, resp, err);
+                }
+                else{
+                    httpMsg.send200(req,resp);
+                }
+                resp.end();
+        
+            });
+        }
+        else{
+            throw new Error("Input not valid!")
+        }
+    }
+    catch(ex){
+
+    }
+};
+
+exports.addBrands = function(req, resp, reqBody){
+    try{
+        if(!reqBody) throw new Error("Input not valid!");
+        var data = JSON.parse(reqBody);
+        console.log(data);
+        if(data){
+            var sql = "insert into Brands (ID, BrandName, BrandDescription) values";
+            sql+= util.format("(%d, '%s', '%s')", data.ID, data.BrandName, data.BrandDescription);
             console.log(sql);
             
             db.executeSql(sql, function(data, err){
@@ -485,6 +627,42 @@ exports.deleteClients = function(req, resp, reqBody){
 
     }
 };
+
+exports.deleteMaterials = function(req, resp, reqBody){
+    try{
+        if(!reqBody) throw new Error("Input not valid!");
+        var data = JSON.parse(reqBody);
+        console.log(data);
+        
+        if(data){
+            
+            if(!data.ID) throw new Error("Empty number")
+            var sql = "delete from Materials";            
+
+            sql += " where ID = " + data.ID;
+            
+            console.log(sql);
+            
+            db.executeSql(sql, function(data, err){
+                if(err){
+                    httpMsg.show500(req, resp, err);
+                }
+                else{
+                    httpMsg.send200(req,resp);
+                }
+                resp.end();
+        
+            });
+        }
+        else{
+            throw new Error("Input not valid!")
+        }
+    }
+    catch(ex){
+
+    }
+};
+
 
 exports.deleteReservations = function(req, resp, reqBody){
     try{
